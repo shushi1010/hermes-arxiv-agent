@@ -6,7 +6,8 @@ papers/
 papers_record.xlsx
 papers_record.csv
 
-
+favorites.json
+papers_data.json
 new_papers.json
 
 crawled_ids.txt
