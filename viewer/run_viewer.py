@@ -3,7 +3,7 @@
 Build papers_data.json from Excel and serve static viewer.
 
 Usage:
-  /home/wsg/.hermes/hermes-agent/venv/bin/python run_viewer.py
+  python3 run_viewer.py
 """
 
 from __future__ import annotations
@@ -133,7 +133,7 @@ def main() -> None:
         if e.errno == errno.EADDRINUSE:
             print(f"[ERROR] Port {args.port} is already in use.")
             print("[HINT] Stop existing process or start with another port, e.g.")
-            print("       /home/wsg/.hermes/hermes-agent/venv/bin/python run_viewer.py --port 8766")
+            print("       python3 run_viewer.py --port 8766")
             sys.exit(1)
         raise
 

@@ -11,13 +11,13 @@
 在本目录执行：
 
 ```bash
-/home/wsg/.hermes/hermes-agent/venv/bin/python run_viewer.py
+python3 run_viewer.py
 ```
 
 如果端口被占用，可换端口启动：
 
 ```bash
-/home/wsg/.hermes/hermes-agent/venv/bin/python run_viewer.py --port 7770
+python3 run_viewer.py --port 7770
 ```
 
 浏览器打开：
@@ -37,5 +37,5 @@ http://<你的机器局域网IP>:8765
 ## 仅更新数据
 
 ```bash
-/home/wsg/.hermes/hermes-agent/venv/bin/python build_data.py
+python3 build_data.py
 ```

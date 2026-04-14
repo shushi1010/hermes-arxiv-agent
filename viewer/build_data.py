@@ -3,7 +3,7 @@
 Build viewer data from papers_record.xlsx.
 
 Usage:
-  /home/wsg/.hermes/hermes-agent/venv/bin/python build_data.py
+  python3 build_data.py
 """
 
 from __future__ import annotations

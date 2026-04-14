@@ -1,7 +1,5 @@
 ## 任务：每天自动监控 arXiv 论文并推送飞书
 
-【重要】使用前请先将下面所有 `/path/to/hermes-arxiv-agent` 替换为你本机的项目实际路径。
-
 ### 第一步：执行 Python 脚本
 cd 到项目根目录后，用 python3 运行：
 ```bash
