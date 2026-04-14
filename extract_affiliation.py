@@ -185,7 +185,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     arxiv_id = sys.argv[1]
-    pdf_dir = Path(sys.argv[2]) if len(sys.argv) > 2 else Path("/home/wsg/hermes_path/arxiv_llm_quantization_paper_monitor/papers")
+    pdf_dir = Path(sys.argv[2]) if len(sys.argv) > 2 else Path(__file__).resolve().parent / "papers"
     pdf_path = pdf_dir / f"{arxiv_id}.pdf"
 
     print(f"=== Extracting: {arxiv_id} ===")

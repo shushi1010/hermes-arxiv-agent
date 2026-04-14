@@ -37,12 +37,20 @@ cd /path/to/hermes-arxiv-agent && python3 monitor.py
 ### 第四步：更新 Excel
 将 affiliations 和 summary_cn 回填到 `/path/to/hermes-arxiv-agent/papers_record.xlsx`（按 arxiv_id 匹配）。
 
-### 第五步：构建飞书 Markdown 消息
+### 第五步：更新网站数据
+在项目根目录执行：
+```bash
+cd /path/to/hermes-arxiv-agent && python3 viewer/build_data.py
+```
+
+确认 `viewer/papers_data.json` 已根据最新 Excel 重建，包含刚回填的 affiliations 和 summary_cn。
+
+### 第六步：构建飞书 Markdown 消息
 输出格式：
 ```
 📚 **论文日报** | YYYY-MM-DD
 共发现 **N** 篇新论文
 [每篇：标题、arXiv ID、日期、作者、单位、PDF 链接、90-150 字中文摘要]
-PDF 已下载至 papers/，记录已更新至 papers_record.xlsx。
+PDF 已下载至 papers/，记录已更新至 papers_record.xlsx，网站数据已更新至 viewer/papers_data.json。
 ```
 **重要：最终回复只输出飞书消息文本，不要输出其他说明。**

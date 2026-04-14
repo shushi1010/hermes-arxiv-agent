@@ -2,6 +2,20 @@
 
 每天自动从 arXiv 抓取论文，用 AI 生成中文摘要和作者单位，推送到飞书，并提供本地静态阅读网站。
 
+## 效果展示
+
+### 飞书推送
+
+![Feishu Push](images/feishu.png)
+
+每天自动推送论文日报，包含标题、作者、单位、PDF 链接和中文摘要。
+
+### Web 阅读网站
+
+![Web Viewer](images/web.png)
+
+本地部署后可在浏览器中按日期筛选、关键词检索，并查看论文摘要与收藏结果。
+
 ## 功能
 
 - 每天按关键词监控 arXiv 新论文
@@ -41,7 +55,7 @@ Hermes 会按 skill 完成：
 
 ## 定时任务说明
 
-定时任务相关逻辑以 [AGENT_SKILL.md](/home/wsg/hermes_path/arxiv_llm_quantization_paper_monitor/AGENT_SKILL.md) 和 [cronjob_prompt.txt](/home/wsg/hermes_path/arxiv_llm_quantization_paper_monitor/cronjob_prompt.txt) 为准。
+定时任务相关逻辑以 [AGENT_SKILL.md](AGENT_SKILL.md) 和 [cronjob_prompt.txt](cronjob_prompt.txt) 为准。
 
 不推荐手工复制 prompt 或手工改路径，正确做法是让 Hermes 在部署时自动完成。
 
@@ -49,7 +63,7 @@ Hermes 会按 skill 完成：
 
 默认监控方向是 LLM 量化相关论文。
 
-如需修改监控方向，编辑 [search_keywords.txt](/home/wsg/hermes_path/arxiv_llm_quantization_paper_monitor/search_keywords.txt) 即可。
+如需修改监控方向，编辑 [search_keywords.txt](search_keywords.txt) 即可。
 
 ## 本地阅读网站
 

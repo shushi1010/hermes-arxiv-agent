@@ -18,7 +18,7 @@ import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment
 
 # ==================== 配置区 ====================
-BASE_DIR = Path("/home/wsg/hermes_path/arxiv_llm_quantization_paper_monitor")
+BASE_DIR = Path(__file__).resolve().parent
 PAPERS_DIR = BASE_DIR / "papers"
 EXCEL_FILE = BASE_DIR / "papers_record.xlsx"
 VIEWER_JSON = BASE_DIR / "viewer" / "papers_data.json"

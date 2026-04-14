@@ -6,12 +6,11 @@ papers/
 papers_record.xlsx
 papers_record.csv
 
-favorites.json
-papers_data.json
+viewer/favorites.json
+viewer/papers_data.json
 new_papers.json
+cronjob_prompt.generated.txt
 
 crawled_ids.txt
 
 .gitignore
-
-!viewer/papers_data.json

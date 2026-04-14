@@ -1,6 +1,6 @@
 ---
 name: hermes-arxiv-agent-deploy
-description: Use this skill inside a Hermes conversation when a user wants Hermes to deploy genggng/hermes-arxiv-agent end to end, including cloning the GitHub repo, installing Python dependencies, checking Feishu readiness, running `prepare_deploy.sh` to patch hardcoded paths, and creating a daily cron job via `/cron add <prompt>` from the patched `cronjob_prompt.txt`.
+description: Use this skill inside a Hermes conversation when a user wants Hermes to deploy genggng/hermes-arxiv-agent end to end, including cloning the GitHub repo, installing Python dependencies, checking Feishu readiness, running `prepare_deploy.sh` to generate `cronjob_prompt.generated.txt`, and creating a daily cron job via `/cron add <prompt>`.
 ---
 
 # Hermes Arxiv Agent Deploy
@@ -27,7 +27,7 @@ Bring the user to a working state where:
 1. Feishu/Lark gateway is configured.
 2. The repo `https://github.com/genggng/hermes-arxiv-agent.git` is cloned locally.
 3. Python dependencies are installed.
-4. Repository files that contain deployment-specific local paths are updated to the real local project directory.
+4. `cronjob_prompt.generated.txt` exists and points to the real local project directory.
 5. A Hermes cron job exists and points to the real local project directory.
 
 Because this skill runs inside Hermes, Hermes itself is already present by assumption.
@@ -78,7 +78,7 @@ Also note the repository default search scope:
 - the default query in `search_keywords.txt` targets quantization-related LLM papers
 - if the user wants another topic, edit `search_keywords.txt` before the first scheduled run
 
-### 4. Run the deployment patch script
+### 4. Run the deployment preparation script
 
 Run this script inside the checked-out repository:
 
@@ -94,11 +94,10 @@ If `PROJECT_DIR` is not supplied, the script uses its own directory as the proje
 
 The script is responsible for:
 
-- patching `monitor.py` so `BASE_DIR` matches the real local checkout
-- patching `cronjob_prompt.txt` so placeholder paths are replaced
-- removing the human-only path reminder from `cronjob_prompt.txt`
-- normalizing helper-script fallback paths in `extract_pdf_info.py` and `extract_affiliation.py`
-- replacing machine-specific Python executable examples in `viewer/` with `python3`
+- reading `cronjob_prompt.txt` as an immutable template
+- generating `cronjob_prompt.generated.txt` with placeholder paths replaced
+- removing the human-only path reminder from `cronjob_prompt.generated.txt`
+- keeping the cron prompt aligned with the requirement to rebuild `viewer/papers_data.json` after Excel is updated
 
 If the user wants manual override, run:
 
@@ -108,20 +107,21 @@ PROJECT_DIR=/absolute/path/to/hermes-arxiv-agent bash prepare_deploy.sh
 
 ### 5. Understand the current path constraint
 
-Current versions of `monitor.py` use a hardcoded project base directory. Because of that, both code and cron prompt must be patched to the real absolute path of the deployed checkout.
+The repository code now resolves its own paths relative to the checked-out project directory, but the Hermes cron prompt still needs the real absolute checkout path.
 
 This means:
 
-- do not use the original repository checkout without patching hardcoded paths
 - do not leave placeholder paths such as `/path/to/hermes-arxiv-agent`
-- do not leave `monitor.py` pointing at the author's local machine
-- always finish path patching before creating the cron job
+- always finish cron prompt generation before creating the cron job
 
-### 6. Use the patched `cronjob_prompt.txt` as the cron payload
+### 6. Use the generated cron prompt as the cron payload
 
-After step 4, `cronjob_prompt.txt` should already contain the correct project path and should no longer contain the human-only path-replacement reminder.
+After step 4:
 
-Use the full current contents of the patched `cronjob_prompt.txt` as the exact `<prompt>` payload for:
+- `cronjob_prompt.txt` remains the repository template
+- `cronjob_prompt.generated.txt` contains the real project path and no longer contains the human-only path-replacement reminder
+
+Use the full current contents of `cronjob_prompt.generated.txt` as the exact `<prompt>` payload for:
 
 ```text
 /cron add <prompt>
@@ -131,7 +131,7 @@ Do not rewrite the prompt from memory. Read it from the patched file and use it 
 This is a Hermes chat slash command, not a bash command.
 Do not try to execute `/cron add` through `bash`, `sh`, or `subprocess`.
 
-Verify the patched file now references paths under `PROJECT_DIR`, for example:
+Verify the generated file now references paths under `PROJECT_DIR`, for example:
 
 - `PROJECT_DIR/new_papers.json`
 - `PROJECT_DIR/papers_record.xlsx`
@@ -139,13 +139,13 @@ Verify the patched file now references paths under `PROJECT_DIR`, for example:
 
 ### 7. Create the cron job
 
-Create the job inside the Hermes conversation using the standard slash-command form with the exact current contents of `cronjob_prompt.txt`.
+Create the job inside the Hermes conversation using the standard slash-command form with the exact current contents of `cronjob_prompt.generated.txt`.
 
 After creation, confirm:
 
 - prompt contains the real absolute path
 - the job is listed in `/cron list`
-- the business instructions from `cronjob_prompt.txt` were preserved exactly
+- the business instructions from `cronjob_prompt.txt` were preserved exactly in `cronjob_prompt.generated.txt`
 
 ### 8. Smoke test
 
@@ -166,32 +166,28 @@ Check whether:
 - Do not ask the user to rename their local directory.
 - Keep the repository name `hermes-arxiv-agent` in clone instructions and user-facing descriptions.
 - If local folder names differ, adapt by substituting the actual absolute path rather than forcing a rename.
-- When reconfiguring cron, patch the repository files first and then reuse the patched `cronjob_prompt.txt`.
+- When reconfiguring cron, rerun `prepare_deploy.sh` and then reuse `cronjob_prompt.generated.txt`.
 - Prefer `prepare_deploy.sh` over ad hoc manual edits, because it centralizes all known path fixes behind one variable.
 - Do not paraphrase or simplify the substantive task instructions from `cronjob_prompt.txt`.
-- Treat the patched `cronjob_prompt.txt` file as the source of truth for cron behavior.
+- Treat `cronjob_prompt.txt` as the template source of truth and `cronjob_prompt.generated.txt` as the deployable cron payload.
 - Treat `/cron add` and `/cron list` as Hermes chat commands, not shell commands.
-- Treat `monitor.py` as a required deployment patch target when it contains the author's local absolute path.
-- Also correct any remaining repository-local hardcoded paths you discover during deployment.
+- Keep repository code path handling relative; do not reintroduce machine-specific absolute paths into tracked files.
 
 ## Path Handling Guidance
 
-The current implementation is deployment-fragile because both code and cron prompt depend on an absolute path.
+The remaining deployment-specific path lives in the Hermes cron prompt, not in the tracked Python code.
 
-Under the current no-code-change constraint, the correct approach is:
+The correct approach is:
 
 1. Determine `PROJECT_DIR` after clone or discovery.
 2. Run `prepare_deploy.sh`.
-3. Confirm that `monitor.py` and `cronjob_prompt.txt` now reference the correct absolute project path.
-4. Use the patched `cronjob_prompt.txt` file content directly when creating or updating cron.
+3. Confirm that `cronjob_prompt.generated.txt` was created with the correct absolute project path.
+4. Use the generated cron prompt file content directly when creating or updating cron.
 
 If future code changes are allowed, recommend this improvement:
 
-- make `monitor.py` derive its base directory from `__file__`
-- use paths relative to the repository root
-- remove all absolute project-root assumptions from helper scripts too
-
-That is the long-term fix. Until then, path substitution is mandatory.
+- keep code paths relative to the repository root
+- keep deployment-specific absolute paths out of tracked files
 
 ## Expected User-Facing Outcome
 
