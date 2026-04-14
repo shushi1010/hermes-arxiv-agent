@@ -28,7 +28,7 @@ Bring the user to a working state where:
 2. The repo `https://github.com/genggng/hermes-arxiv-agent.git` is cloned locally.
 3. Python dependencies are installed.
 4. `cronjob_prompt.generated.txt` exists and points to the real local project directory.
-5. A Hermes cron job exists and points to the real local project directory.
+5. A Hermes cron job exists, points to the real local project directory, and delivers back to the Feishu/Lark chat instead of `local`.
 
 Because this skill runs inside Hermes, Hermes itself is already present by assumption.
 If Feishu is not configured, that is a deploy-time prerequisite to surface, not a reason to discuss Hermes installation.
@@ -49,6 +49,11 @@ If Feishu/Lark is not configured, direct the user to run:
 ```bash
 hermes gateway setup
 ```
+
+The cron job for this repository should be created from a Feishu/Lark Hermes conversation, not from a local CLI-only chat.
+For this project, the intended delivery target is Feishu/Lark.
+
+When creating or repairing the cron job, ensure its delivery is set to `feishu` rather than `local`.
 
 ### 2. Clone or locate the repository
 
@@ -139,13 +144,19 @@ Verify the generated file now references paths under `PROJECT_DIR`, for example:
 
 ### 7. Create the cron job
 
-Create the job inside the Hermes conversation using the standard slash-command form with the exact current contents of `cronjob_prompt.generated.txt`.
+Create the job inside the Feishu/Lark Hermes conversation using the standard slash-command form with the exact current contents of `cronjob_prompt.generated.txt`.
+
+Delivery must be `feishu`, so the final cron output is pushed to Feishu/Lark rather than being saved only as `local`.
+
+If the current job was previously created with delivery `local`, recreate it or edit it so the effective delivery target becomes `feishu`.
 
 After creation, confirm:
 
 - prompt contains the real absolute path
 - the job is listed in `/cron list`
 - the business instructions from `cronjob_prompt.txt` were preserved exactly in `cronjob_prompt.generated.txt`
+- delivery is not `local`
+- delivery is set to `feishu`
 
 ### 8. Smoke test
 
@@ -171,6 +182,7 @@ Check whether:
 - Do not paraphrase or simplify the substantive task instructions from `cronjob_prompt.txt`.
 - Treat `cronjob_prompt.txt` as the template source of truth and `cronjob_prompt.generated.txt` as the deployable cron payload.
 - Treat `/cron add` and `/cron list` as Hermes chat commands, not shell commands.
+- Treat Feishu/Lark delivery as required for this project; set the cron delivery target to `feishu` and do not leave the job on `local`.
 - Keep repository code path handling relative; do not reintroduce machine-specific absolute paths into tracked files.
 
 ## Path Handling Guidance
