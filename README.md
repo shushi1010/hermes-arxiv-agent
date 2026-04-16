@@ -107,7 +107,7 @@ http://localhost:8765
 可以在 Hermes 对话里直接说：
 
 ```text
-请使用当前仓库里的 UPDATE_CRON_SKILL.md，只更新 hermes-arxiv-agent 的定时任务。不要重新克隆仓库，不要重装依赖。请基于当前本地仓库运行 prepare_deploy.sh，读取最新 cronjob_prompt.generated.txt，并将现有 cron 更新到最新版本；如果不能直接编辑，就删除旧任务后重建一个新的同名任务。
+请使用当前仓库里的 UPDATE_CRON_SKILL.md，只更新 hermes-arxiv-agent 的本地模式定时任务。不要重新克隆仓库，不要重装依赖。请基于当前本地仓库运行 prepare_deploy.sh，读取最新 cronjob_prompt.generated.txt，并将现有 cron 更新到最新版本；如果不能直接编辑，就删除旧任务后重建一个新的同名任务。
 ```
 
 ## GitHub Pages 模式
@@ -173,6 +173,16 @@ bash scripts/publish_viewer.sh
 - push 到 `main` 后会触发 `.github/workflows/pages.yml`
 - 推送目标应当是你自己 fork 的仓库
 - 公开站点的收藏功能使用浏览器 `localStorage`，不再依赖服务器端 `favorites.json`
+
+### 更新定时任务
+
+如果你已经有可用的 GitHub Pages 模式仓库，只想刷新 cron prompt 和定时任务，不要删仓库重装。
+
+可以在 Hermes 对话里直接说：
+
+```text
+请使用当前仓库里的 UPDATE_CRON_SKILL.md，只更新 hermes-arxiv-agent 的 GitHub Pages 模式定时任务。不要重新克隆仓库，不要重装依赖。请基于当前本地仓库以 DEPLOY_MODE=pages 运行 prepare_deploy.sh，读取最新 cronjob_prompt.generated.txt，并将现有 cron 更新到最新版本；如果不能直接编辑，就删除旧任务后重建一个新的同名任务。请保留当前 fork 仓库作为发布仓库，不要改回上游仓库。
+```
 
 ## 定时任务说明
 

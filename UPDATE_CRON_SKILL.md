@@ -48,10 +48,18 @@ If the user already provided the path, use that exact path.
 
 Determine the intended deployment mode before regenerating:
 
-- if `.deploy_mode` exists, use that mode unless the user explicitly wants to change it
+- if the user explicitly says `更新本地模式定时任务`, use `local`
+- if the user explicitly says `更新 GitHub Pages 模式定时任务`, use `pages`
+- otherwise, if `.deploy_mode` exists, use that mode
 - otherwise default to `local`
 
-Do not ask the user to choose freely if the existing repository already has a clear mode recorded in `.deploy_mode`.
+Mode priority is:
+
+1. explicit user update phrase
+2. `.deploy_mode`
+3. default `local`
+
+Do not ask the user to choose freely if the mode is already clear from the user's phrase or `.deploy_mode`.
 
 Run inside `PROJECT_DIR`:
 
