@@ -3,6 +3,8 @@ set -euo pipefail
 
 PROJECT_DIR="${PROJECT_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
 DATE_TAG="${DATE_TAG:-$(date +%F)}"
+PUSH_MAX_ATTEMPTS="${PUSH_MAX_ATTEMPTS:-5}"
+PUSH_RETRY_DELAY="${PUSH_RETRY_DELAY:-10}"
 
 cd "$PROJECT_DIR"
 
@@ -48,6 +50,24 @@ if git diff --cached --quiet; then
 fi
 
 git commit -m "chore(viewer): update site data for ${DATE_TAG}" -- "${changed_paths[@]}"
-git push origin "$BRANCH"
+
+attempt=1
+delay="$PUSH_RETRY_DELAY"
+while true; do
+  if git push origin "$BRANCH"; then
+    break
+  fi
+
+  if (( attempt >= PUSH_MAX_ATTEMPTS )); then
+    echo "[ERROR] git push failed after ${PUSH_MAX_ATTEMPTS} attempts." >&2
+    echo "[HINT] Retry manually with: git push origin ${BRANCH}" >&2
+    exit 1
+  fi
+
+  echo "[WARN] git push failed on attempt ${attempt}/${PUSH_MAX_ATTEMPTS}. Retrying in ${delay}s..." >&2
+  sleep "$delay"
+  attempt=$((attempt + 1))
+  delay=$((delay * 2))
+done
 
 echo "[OK] Published viewer changes to origin/${BRANCH}"
