@@ -1,10 +1,38 @@
 {
-  "count": 76,
+  "count": 78,
   "crawled_date_min": "2026-04-22",
-  "crawled_date_max": "2026-05-07",
+  "crawled_date_max": "2026-05-08",
   "published_date_min": "2026-03-28",
-  "published_date_max": "2026-05-04",
+  "published_date_max": "2026-05-06",
   "papers": [
+    {
+      "arxiv_id": "2605.04738",
+      "title": "OSAQ: Outlier Self-Absorption for Accurate Low-bit LLM Quantization",
+      "authors": "Zhikai Li, Zhen Dong, Xuewen Liu, Jing Zhang, Qingyi Gu",
+      "affiliations": "Institute of Automation, Chinese Academy of Sciences; University of California, Santa Barbara",
+      "published_date": "2026-05-06",
+      "categories": "cs.LG",
+      "abstract": "Large Language Models (LLMs) have demonstrated remarkable capabilities. However, their massive parameter scale leads to significant resource consumption and latency during inference. Post-training weight-only quantization offers a promising solution by reducing model size and accelerating token generation through alleviating the memory-bound issue. Nevertheless, the presence of inherent systematic outliers in weights continues to be a major obstacle. While existing methods, such as scaling and rotation, attempt to address this issue, the performance remains unsatisfactory. In this paper, we propose Outlier Self-Absorption Quantization (OSAQ), which performs additive weight suppression guided by the second-order low-rank property for low-bit weight-only quantization of LLMs. Specifically, we observe that the Hessian exhibits low-rank consistency across different inputs, with certain directions consistently showing vanishing curvature. Leveraging this property, we identify a stable null space of the Hessian and then construct an additive weight transformation by linearly combining the vectors within this null space, thereby suppressing weight outliers without affecting the task loss. This additive transformation can be absorbed into the weights offline, requiring no inter-layer transformations and introducing no inference overhead. Moreover, the construction is efficiently achieved by a closed-form solution, without resource-intensive training or iterative procedures. Extensive experiments demonstrate that OSAQ effectively suppresses outliers and enhances low-bit quantization performance. For instance, in 2-bit quantization, OSAQ, when integrated with GPTQ, achieves over 40% lower perplexity compared to vanilla GPTQ.",
+      "summary_cn": "OSAQ利用Hessian矩阵的低秩一致性，识别其稳定零空间构造加性权重变换，抑制权重离群值而不影响任务损失。该变换可离线吸收至权重中，无需层间变换且无推理开销，通过闭式解高效构建。2-bit量化下结合GPTQ较原始GPTQ困惑度降低40%以上，有效提升低比特量化性能。",
+      "pdf_filename": "2605.04738.pdf",
+      "crawled_date": "2026-05-08",
+      "notes": "",
+      "pdf_url": "https://arxiv.org/pdf/2605.04738"
+    },
+    {
+      "arxiv_id": "2605.04084",
+      "title": "FASQ: Flexible Accelerated Subspace Quantization for Calibration-Free LLM Compression",
+      "authors": "Ye Qiao, Yian Wang, Zhiheng Chen, Hyoukjun Kwon, Sitao Huang",
+      "affiliations": "University of California, Irvine",
+      "published_date": "2026-04-22",
+      "categories": "cs.LG, cs.AI, cs.AR",
+      "abstract": "Compressing large language models (LLMs) for deployment on commodity GPUs remains challenging: conventional scalar quantization is limited to fixed bit-widths (e.g., 8/4/3-bit), offers only a few discrete compression points, and typically requires calibration data. We present FASQ (Flexible Accelerated Subspace Quantization), a calibration-free framework that applies product quantization to LLM weight matrices. By tuning two parameters, sub-vector size and codebook cardinality, FASQ exposes a continuous design space spanning 27-49% of the original FP16 model size, filling compression gaps that fixed-bit schemes cannot reach. On Meta-Llama-3-8B, FASQ surpasses 4-bit GPTQ and AWQ in accuracy (67.1-67.7 avg.) at 37-42% model size, with consistent results on Qwen3-8B and Qwen3.5-9B-Base. To make product quantization practical at inference time, we design custom CUDA kernels: a LUT-free direct-compute GEMV for decode and an output-stationary double-buffered LUT GEMM for prefill, both with split-K parallelism. On an RTX~3090, FASQ achieves 45.2 tok/s decode at effective 4-bit (2.56x memory reduction) and 51.8 tok/s at effective 3-bit (2.80x), both surpassing FP16 tensor-core performance (43.9 tok/s) and delivering 1.6 to 1.8x the throughput of AWQ, 2.5 to 2.5x of GPTQ, and 4.3 to 5x of RTN. FASQ is the only compressed method that accelerates decode beyond FP16, offering calibration-free compression, continuous size-quality trade-offs, and real-time inference on a single consumer GPU.",
+      "summary_cn": "FASQ提出无需校准的乘积量化框架，调节子向量与码本基数实现27%-49%连续压缩。在Llama-3-8B上以37%-42%体积超越GPTQ和AWQ精度，设计专用CUDA内核在RTX 3090上解码速度超越FP16，是唯一解码加速超过FP16的压缩方法。",
+      "pdf_filename": "2605.04084.pdf",
+      "crawled_date": "2026-05-08",
+      "notes": "",
+      "pdf_url": "https://arxiv.org/pdf/2605.04084"
+    },
     {
       "arxiv_id": "2605.02933",
       "title": "Relation Reasoning with LLMs in Expensive Optimization",
